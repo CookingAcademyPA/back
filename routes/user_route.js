@@ -10,6 +10,8 @@ router.get('/', authMiddleware, userController.getAllUsers);
 router.get('/:id', authMiddleware, userController.getUserById);
 router.put('/:id', authMiddleware, userController.updateUserInfo);
 router.put('/:id/changePassword', authMiddleware, userController.updateUserPassword);
+router.get('/:id/cart', authMiddleware, userController.getUserCurrentCart);
+router.get('/:id/carts', authMiddleware, userController.getUserCarts);
 router.delete('/:id', authMiddleware, adminMiddleware, userController.deleteUser);
 
 module.exports = router;

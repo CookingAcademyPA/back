@@ -2,6 +2,7 @@ const supabase = require('../config/supabase_config');
 const User = require("../models/user");
 const UserBody = require("../models/body/user_body");
 const bcrypt = require("bcrypt");
+const Cart = require("../models/cart");
 
 class UserController {
     async getAllUsers(req, res) {
@@ -107,6 +108,55 @@ class UserController {
 
             res.json({message: `User ${id} successfully deleted.`});
 
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async getUserCarts(req, res) {
+        try {
+            const { id } = req.params;
+
+            const {data, error} = await supabase
+                .from('cart')
+                .select('*')
+                .eq('user_id', id);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot retrieve the carts.'});
+            }
+
+            if (data.length === 0) {
+                return res.status(404).json({error: 'Carts not found.'});
+            }
+
+            res.json(data);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async getUserCurrentCart(req, res) {
+        try {
+            const { id } = req.params;
+
+            const {data, error} = await supabase
+                .from('cart')
+                .select('*')
+                .eq('user_id', id)
+                .eq('state', 'PENDING');
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot retrieve the cart.'});
+            }
+
+            if (data.length === 0) {
+                return res.status(404).json({error: 'Cart not found.'});
+            }
+
+            res.json(data);
         } catch (error) {
             console.error(error);
             res.status(500).json({error: 'Error server.'});
