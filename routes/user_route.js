@@ -2,15 +2,16 @@
 
 const express = require('express');
 const UserController = require('../controllers/user_controller');
+const authMiddleware = require('../middlewares/auth_middleware');
 
 const router = express.Router();
 const userController = new UserController();
 
+
 // Routes pour les tâches (todos)
-router.get('/', userController.getAllUsers);
-router.get('/:id', userController.getUserById);
-router.post('/', userController.createUser);
-router.put('/:id', userController.updateUser);
-router.delete('/:id', userController.deleteUser);
+router.get('/', authMiddleware, userController.getAllUsers);
+router.get('/:id', authMiddleware, userController.getUserById);
+router.put('/:id', authMiddleware, userController.updateUser);
+router.delete('/:id', authMiddleware, userController.deleteUser);
 
 module.exports = router;

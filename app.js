@@ -8,7 +8,9 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 // Routes for todos
+const authRoutes = require('./routes/auth_route');
 const userRoutes = require('./routes/user_route');
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 
 app.listen(port, () => {

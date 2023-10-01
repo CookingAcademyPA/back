@@ -12,6 +12,7 @@ class User {
         this.city = data.city;
         this.country = data.country;
         this.subscription_id = data.subscription_id;
+        this.is_admin = data.is_admin;
     }
 }
 

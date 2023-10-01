@@ -4,7 +4,7 @@ const User = require("../models/user");
 class UserController {
     async getAllUsers(req, res) {
         try {
-            const { data, error } = await supabase.from('user').select('*');
+            const { data, error } = await supabase.from('user').select('*').eq('is_admin', false);
 
             if (error) {
                 return res.status(500).json({ error: 'Error: cannot retrieve users.' });
@@ -43,23 +43,6 @@ class UserController {
         }
     }
 
-    async createUser(req, res) {
-        try {
-            const newUser = new User(req.body);
-
-            const { data, error } = await supabase.from('user').upsert([newUser]);
-
-            if (error) {
-                return res.status(500).json({ error: 'Error: cannot create user.' });
-            }
-
-            res.status(201).json(data[0]);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ error: 'Error server.' });
-        }
-    }
-
     async updateUser(req, res) {
         try {
             const { id } = req.params;
@@ -84,15 +67,19 @@ class UserController {
 
     async deleteUser(req, res) {
         try {
-            const { id } = req.params;
+            if (req.isAdmin === true) {
+                const {id} = req.params;
 
-            const { error } = await supabase.from('user').delete().eq('id', id);
+                const {error} = await supabase.from('user').delete().eq('id', id);
 
-            if (error) {
-                return res.status(500).json({ error: 'Error: cannot delete the user.' });
+                if (error) {
+                    return res.status(500).json({error: 'Error: cannot delete the user.'});
+                }
+
+                res.json({message: `User ${id} successfully deleted.`});
+            } else {
+                res.status(403).json({error: 'You are not authorized to perform this action.'});
             }
-
-            res.json({ message: `User ${id} successfully deleted.` });
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Error server.' });
