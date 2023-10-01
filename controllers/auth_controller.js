@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const supabase = require('../config/supabase_config');
 const User = require("../models/user");
 const JWTUtils = require('../middlewares/jwt_utils');
-const UserBody = require("../models/user_body");
+const UserBody = require("../models/body/user_body");
 
 class AuthController {
     async signup(req, res) {
