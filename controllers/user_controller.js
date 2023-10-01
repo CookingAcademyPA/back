@@ -1,5 +1,7 @@
 const supabase = require('../config/supabase_config');
 const User = require("../models/user");
+const UserBody = require("../models/user_body");
+const bcrypt = require("bcrypt");
 
 class UserController {
     async getAllUsers(req, res) {
@@ -43,22 +45,50 @@ class UserController {
         }
     }
 
-    async updateUser(req, res) {
+    async updateUserInfo(req, res) {
         try {
-            const { id } = req.params;
+            const reqBodyKeys = Object.keys(req.body);
+            if (!reqBodyKeys.includes("password") && !reqBodyKeys.includes("is_admin")) {
+                const {id} = req.params;
+                const {data, error} = await supabase
+                    .from('user')
+                    .update(req.body)
+                    .eq('id', id);
 
-            const updatedUser = new User( { id, ...req.body } );
-
-            // Mettre à jour une tâche dans la base de données
-            const { data, error } = await supabase
-                .from('user')
-                .upsert([updatedUser]);
-
-            if (error) {
-                return res.status(500).json({ error: 'Error: cannot update user.' });
+                if (error) {
+                    console.log(error);
+                    return res.status(500).json({error: 'Error: cannot update user.'});
+                }
+                return res.status(200).json({message: 'User updated.'});
+            } else {
+                return res.status(500).json({error: 'Error: cannot update user password and admin fields with this request.'});
             }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error server.' });
+        }
+    }
 
-            res.json(data[0]);
+    async updateUserPassword(req, res) {
+        try {
+            const reqBodyKeys = Object.keys(req.body);
+            if (reqBodyKeys.includes("password") && reqBodyKeys.length === 1) {
+                const {id} = req.params;
+                const password = req.body.password;
+                const hashedPassword = await bcrypt.hash(password, 10);
+                const {data, error} = await supabase
+                    .from('user')
+                    .update({ password: hashedPassword })
+                    .eq('id', id);
+
+                if (error) {
+                    return res.status(500).json({error: 'Error: cannot update user.'});
+                }
+
+                return res.status(200).json({message: 'User password updated.'});
+            } else {
+                return res.status(500).json({error: 'Error: can only update password with this request.'});
+            }
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Error server.' });

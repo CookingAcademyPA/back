@@ -1,7 +1,5 @@
-class User {
+class UserBody {
     constructor(data) {
-        this.id = data.id;
-        this.created_at = data.created_at;
         this.email = data.email;
         this.password = data.password;
         this.first_name = data.first_name;
@@ -16,4 +14,4 @@ class User {
     }
 }
 
-module.exports = User;
+module.exports = UserBody;
