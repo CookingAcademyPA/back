@@ -67,16 +67,32 @@ class CartController {
         try {
             const {id} = req.params;
             if (Object.keys(req.body).includes("state")) {
-                const state = req.body.state;
-                const {data, error} = await supabase
+                const newState = req.body.state;
+                const { data: existingData, error: existingError } = await supabase
                     .from('cart')
-                    .update(state)
-                    .eq('id', id);
+                    .select('state')
+                    .eq('id', id)
+                    .single();
 
-                if (error) {
+                if (existingError) {
                     return res.status(500).json({error: 'Error: cannot update the cart.'});
                 }
-                return res.status(201).json({message: `Cart ${id} successfully updated.`});
+
+                const currentState = existingData.state;
+                if (newState !== currentState) {
+                    const {data, error} = await supabase
+                        .from('cart')
+                        .update({'state': newState})
+                        .eq('id', id);
+                    if (error) {
+                        if (error.code === '23514') {
+                            return res.status(400).json({error: 'Error: state must be PENDING, VALIDATED, PAID or CANCELLED.'});
+                        }
+                        return res.status(500).json({ error: 'Error: cannot update state.' });
+                    }
+                    return res.status(201).json({message: `Cart ${id} successfully updated to ${newState}.`});
+                }
+                return res.status(400).json({error: 'Bad request: state is the same.'});
             } else {
                 return res.status(400).json({error: 'Bad request: state is required.'});
             }
