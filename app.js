@@ -17,6 +17,7 @@ const productRoutes = require('./routes/product_route');
 const recipeRoutes = require('./routes/recipe_route');
 const cartRoutes = require('./routes/cart_route');
 const serviceRoutes = require('./routes/service_route');
+const commentRoutes = require('./routes/comment_route');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -27,6 +28,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/recipes', recipeRoutes);
 app.use('/api/carts', cartRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/comments', commentRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
