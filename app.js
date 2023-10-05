@@ -32,7 +32,7 @@ app.use('/api/carts', cartRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/invoices', invoiceRoutes);
-app.use('/api/buys', buyRoutes);
+app.use('/api/buy', buyRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
