@@ -3,6 +3,7 @@ const User = require("../models/user");
 const UserBody = require("../models/body/user_body");
 const bcrypt = require("bcrypt");
 const Cart = require("../models/cart");
+const BuyMealBody = require("../models/body/buy_meal_body");
 
 class UserController {
     async getAllUsers(req, res) {
@@ -116,7 +117,7 @@ class UserController {
 
     async getUserCarts(req, res) {
         try {
-            const { id } = req.params;
+            const {id} = req.params;
 
             const {data, error} = await supabase
                 .from('cart')
@@ -140,7 +141,7 @@ class UserController {
 
     async getUserCurrentCart(req, res) {
         try {
-            const { id } = req.params;
+            const {id} = req.params;
 
             const {data, error} = await supabase
                 .from('cart')

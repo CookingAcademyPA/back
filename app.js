@@ -19,6 +19,7 @@ const cartRoutes = require('./routes/cart_route');
 const serviceRoutes = require('./routes/service_route');
 const commentRoutes = require('./routes/comment_route');
 const invoiceRoutes = require('./routes/invoice_route');
+const buyRoutes = require('./routes/buy_route');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -31,6 +32,7 @@ app.use('/api/carts', cartRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/buys', buyRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

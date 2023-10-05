@@ -1,6 +1,9 @@
 const supabase = require('../config/supabase_config');
 const CartBody = require("../models/body/cart_body");
 const Cart = require("../models/cart");
+const BuyMealBody = require("../models/body/buy_meal_body");
+const BuyProductBody = require("../models/body/buy_product_body");
+const BuyServiceBody = require("../models/body/buy_service_body");
 
 class CartController {
     async getAllCarts(req, res) {
@@ -113,6 +116,126 @@ class CartController {
             }
 
             res.json({message: `Cart ${id} successfully deleted.`});
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async getBuyMealByCartId(req, res) {
+        try {
+            const {id} = req.params;
+
+            const {data, error} = await supabase
+                .from('buy_meal')
+                .select('*')
+                .eq('cart_id', id);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot retrieve the buy_meal.'});
+            }
+
+            res.json(data);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async getBuyProductByCartId(req, res) {
+        try {
+            const {id} = req.params;
+
+            const {data, error} = await supabase
+                .from('buy_product')
+                .select('*')
+                .eq('cart_id', id);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot retrieve the buy_product.'});
+            }
+
+            res.json(data);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async getBuyServiceByCartId(req, res) {
+        try {
+            const {id} = req.params;
+
+            const {data, error} = await supabase
+                .from('buy_service')
+                .select('*')
+                .eq('cart_id', id);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot retrieve the buy_service.'});
+            }
+
+            res.json(data);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async addBuyMealToCart(req, res) {
+        try {
+            const { cart_id } = req.params.cart_id;
+            const newMeal = new BuyMealBody({ 'cart_id': cart_id, 'meal_id': req.body.meal_id, 'quantity': req.body.quantity });
+
+            const {data, error} = await supabase
+                .from('buy_meal')
+                .insert([newMeal]);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot add meal.'});
+            }
+
+            res.status(201).json(newMeal);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async addBuyProductToCart(req, res) {
+        try {
+            const { cart_id } = req.params.cart_id;
+            const newProduct = new BuyProductBody({ 'cart_id': cart_id, 'product_id': req.body.product_id, 'quantity': req.body.quantity });
+
+            const {data, error} = await supabase
+                .from('buy_product')
+                .insert([newProduct]);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot add product.'});
+            }
+
+            res.status(201).json(newProduct);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async addBuyServiceToCart(req, res) {
+        try {
+            const { cart_id } = req.params.cart_id;
+            const newService = new BuyServiceBody({ 'cart_id': cart_id, 'service_id': req.body.service_id, 'quantity': req.body.quantity });
+
+            const {data, error} = await supabase
+                .from('buy_meal')
+                .insert([newService]);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot add service.'});
+            }
+
+            res.status(201).json(newService);
         } catch (error) {
             console.error(error);
             res.status(500).json({error: 'Error server.'});
