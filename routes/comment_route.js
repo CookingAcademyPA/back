@@ -6,9 +6,9 @@ const adminMiddleware = require('../middlewares/admin_middleware');
 const router = express.Router();
 const commentController = new CommentController();
 
-router.get('/', authMiddleware, commentController.getAllComments);
+router.get('/', commentController.getAllComments);
 router.get('/user/:user_id', authMiddleware, commentController.getAllCommentsByUserId);
-router.get('/service/:service_id', authMiddleware, commentController.getAllCommentsByServiceId);
+router.get('/service/:service_id', commentController.getAllCommentsByServiceId);
 router.get('/:id', authMiddleware, commentController.getCommentById);
 router.post('/', authMiddleware, commentController.createComment);
 router.put('/:id', authMiddleware, commentController.updateComment);

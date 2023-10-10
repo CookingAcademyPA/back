@@ -21,6 +21,21 @@ class UserController {
         }
     }
 
+    async getAllAdmins(req, res) {
+        try {
+            const {data, error} = await supabase.from('user').select('*').eq('is_admin', true);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot retrieve admins.'});
+            }
+
+            res.json(data);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
     async getUserById(req, res) {
         try {
             const {id} = req.params;
