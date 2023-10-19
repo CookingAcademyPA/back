@@ -2,10 +2,12 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const port = process.env.PORT || 3000;
 
 // Middleware to parse JSON
 app.use(express.json());
+app.use(cors());
 
 // Routes for todos
 const authRoutes = require('./routes/auth_route');
@@ -21,18 +23,13 @@ const commentRoutes = require('./routes/comment_route');
 const invoiceRoutes = require('./routes/invoice_route');
 const buyRoutes = require('./routes/buy_route');
 
-app.use(function (req, res, next) {
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type','Content-Type, Authorization');
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    //res.setHeader('Access-Control-Allow-Credentials', true);
-    next();
-});
+const corsOptions = {
+    origin: '*',
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'authorization',
+};
+
+app.use(cors(corsOptions));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
