@@ -36,6 +36,33 @@ class UserController {
         }
     }
 
+    async getAdminById(req, res) {
+        try {
+            const {id} = req.params;
+
+            const {data, error} = await supabase
+                .from('user')
+                .select('*')
+                .eq('id', id)
+                .eq('is_admin', true);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot retrieve the admin.'});
+            }
+
+            if (data.length === 0) {
+                return res.status(404).json({error: 'Admin not found.'});
+            }
+
+            const admin = new User(data[0])
+
+            res.json(admin);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
     async getUserById(req, res) {
         try {
             const {id} = req.params;

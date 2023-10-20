@@ -8,6 +8,7 @@ const userController = new UserController();
 
 router.get('/', authMiddleware, userController.getAllUsers);
 router.get('/admins', authMiddleware, adminMiddleware, userController.getAllAdmins);
+router.get('/admins/:id', userController.getAdminById);
 router.get('/:id', authMiddleware, userController.getUserById);
 router.put('/:id', authMiddleware, userController.updateUserInfo);
 router.put('/:id/changePassword', authMiddleware, userController.updateUserPassword);
