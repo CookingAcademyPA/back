@@ -184,8 +184,9 @@ class CartController {
 
     async addBuyMealToCart(req, res) {
         try {
-            const { cart_id } = req.params.cart_id;
-            const newMeal = new BuyMealBody({ 'cart_id': cart_id, 'meal_id': req.body.meal_id, 'quantity': req.body.quantity });
+            const cartId = req.params.id;
+            const mealId = req.params.meal_id;
+            const newMeal = new BuyMealBody({ 'cart_id': cartId, 'meal_id': mealId, 'quantity': req.body.quantity });
 
             const {data, error} = await supabase
                 .from('buy_meal')
@@ -204,8 +205,9 @@ class CartController {
 
     async addBuyProductToCart(req, res) {
         try {
-            const { cart_id } = req.params.cart_id;
-            const newProduct = new BuyProductBody({ 'cart_id': cart_id, 'product_id': req.body.product_id, 'quantity': req.body.quantity });
+            const cartId = req.params.id;
+            const productId = req.params.product_id;
+            const newProduct = new BuyProductBody({ 'cart_id': cartId, 'product_id': productId, 'quantity': req.body.quantity });
 
             const {data, error} = await supabase
                 .from('buy_product')
@@ -224,11 +226,12 @@ class CartController {
 
     async addBuyServiceToCart(req, res) {
         try {
-            const { cart_id } = req.params.cart_id;
-            const newService = new BuyServiceBody({ 'cart_id': cart_id, 'service_id': req.body.service_id, 'quantity': req.body.quantity });
+            const cartId = req.params.id;
+            const serviceId = req.params.service_id;
+            const newService = new BuyServiceBody({ 'cart_id': cartId, 'service_id': serviceId, 'quantity': req.body.quantity });
 
             const {data, error} = await supabase
-                .from('buy_meal')
+                .from('buy_service')
                 .insert([newService]);
 
             if (error) {
@@ -236,6 +239,132 @@ class CartController {
             }
 
             res.status(201).json(newService);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async removeMealFromCart(req, res) {
+        try {
+            const cartId = req.params.id;
+            const mealId = req.params.meal_id;
+
+            const {error} = await supabase.from('buy_meal').delete().eq('meal_id', mealId).eq('cart_id', cartId);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot delete the buy_meal.'});
+            }
+
+            res.json({message: `Buy_meal ${id} successfully deleted.`});
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async removeProductFromCart(req, res) {
+        try {
+            const cartId = req.params.id;
+            const productId = req.params.product_id;
+
+            const {error} = await supabase.from('buy_product').delete().eq('product_id', productId).eq('cart_id', cartId);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot delete the buy_product.'});
+            }
+
+            res.json({message: `Buy_product ${id} successfully deleted.`});
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async updateBuyMeal(req, res) {
+        try {
+            const cartId = req.params.id;
+            const mealId = req.params.meal_id;
+            if (Object.keys(req.body).includes("quantity")) {
+                const quantity = req.body.quantity;
+                const {data, error} = await supabase
+                    .from('buy_meal')
+                    .update({'quantity': quantity})
+                    .eq('meal_id', mealId)
+                    .eq('cart_id', cartId);
+                if (error) {
+                    return res.status(500).json({ error: 'Error: cannot update quantity.' });
+                }
+                return res.status(201).json({message: `Meal ${mealId} from cart ${cartId} successfully updated to quantity=${quantity}.`});
+            } else {
+                return res.status(400).json({error: 'Bad request: quantity is required.'});
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async updateBuyProduct(req, res) {
+        try {
+            const cartId = req.params.id;
+            const productId = req.params.product_id;
+            if (Object.keys(req.body).includes("quantity")) {
+                const quantity = req.body.quantity;
+                const {data, error} = await supabase
+                    .from('buy_product')
+                    .update({'quantity': quantity})
+                    .eq('product_id', productId)
+                    .eq('cart_id', cartId);
+                if (error) {
+                    return res.status(500).json({ error: 'Error: cannot update quantity.' });
+                }
+                return res.status(201).json({message: `Product ${productId} from cart ${cartId} successfully updated to quantity=${quantity}.`});
+            } else {
+                return res.status(400).json({error: 'Bad request: quantity is required.'});
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async updateBuyService(req, res) {
+        try {
+            const cartId = req.params.id;
+            const serviceId = req.params.service_id;
+            if (Object.keys(req.body).includes("quantity")) {
+                const quantity = req.body.quantity;
+                const {data, error} = await supabase
+                    .from('buy_service')
+                    .update({'quantity': quantity})
+                    .eq('service_id', serviceId)
+                    .eq('cart_id', cartId);
+                if (error) {
+                    return res.status(500).json({ error: 'Error: cannot update quantity.' });
+                }
+                return res.status(201).json({message: `Service ${serviceId} from cart ${cartId} successfully updated to quantity=${quantity}.`});
+            } else {
+                return res.status(400).json({error: 'Bad request: quantity is required.'});
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
+    async removeServiceFromCart(req, res) {
+        try {
+            const cartId = req.params.id;
+            const serviceId = req.params.service_id;
+
+            const {error} = await supabase.from('buy_service').delete().eq('service_id', serviceId).eq('cart_id', cartId);
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot delete the buy_service.'});
+            }
+
+            res.json({message: `Buy_service ${id} successfully deleted.`});
         } catch (error) {
             console.error(error);
             res.status(500).json({error: 'Error server.'});
