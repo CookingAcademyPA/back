@@ -121,6 +121,40 @@ class ServiceController {
             res.status(500).json({error: 'Error server.'});
         }
     }
+
+    async getReservationsByServiceId(req, res) {
+        try {
+            const service_id = req.params.id;
+            const { data: cartIds, error } = await supabase
+                .from('buy_service')
+                .select('cart_id')
+                .eq('service_id', service_id);
+
+            if (error) {
+                return res.status(500).json({ error: 'Cannot retrieve users ids' });
+            }
+
+            const userIds = [];
+
+            for (const entry of cartIds) {
+                const { data: cartData, error: cartError } = await supabase
+                    .from('cart')
+                    .select('user_id')
+                    .eq('id', entry.cart_id)
+                    .single();
+
+                if (cartData) {
+                    userIds.push(cartData.user_id);
+                } else {
+                    console.error('Error:', cartError);
+                }
+            }
+
+            res.status(200).json(userIds);
+        } catch (error) {
+            res.status(500).json({ error: 'Error server' });
+        }
+    }
 }
 
 module.exports = ServiceController;
