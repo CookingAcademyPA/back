@@ -61,6 +61,9 @@ class BuyController {
                 .insert([newMeal]);
 
             if (error) {
+                if (error.code === '23505') {
+                    return res.status(400).json({error: 'Error: meal already bought.'});
+                }
                 return res.status(500).json({error: 'Error: cannot add meal.'});
             }
 
@@ -80,6 +83,9 @@ class BuyController {
                 .insert([newProduct]);
 
             if (error) {
+                if (error.code === '23505') {
+                    return res.status(400).json({error: 'Error: product already bought.'});
+                }
                 return res.status(500).json({error: 'Error: cannot add product.'});
             }
 
@@ -99,6 +105,9 @@ class BuyController {
                 .insert([newService]);
 
             if (error) {
+                if (error.code === '23505') {
+                    return res.status(400).json({error: 'Error: service already bought.'});
+                }
                 return res.status(500).json({error: 'Error: cannot add service.'});
             }
 
