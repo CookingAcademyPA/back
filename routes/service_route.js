@@ -7,7 +7,7 @@ const router = express.Router();
 const serviceController = new ServiceController();
 
 router.get('/', serviceController.getAllServices);
-router.get('/:type', serviceController.getServiceByType);
+router.get('/type/:type', serviceController.getServiceByType);
 router.get('/:id', serviceController.getServiceById);
 router.post('/', authMiddleware, adminMiddleware, serviceController.createService);
 router.put('/:id', authMiddleware, serviceController.updateService);
