@@ -156,6 +156,32 @@ class ServiceController {
         }
     }
 
+    async hasCartReservedService(req, res) {
+        try {
+            const { id, cart_id } = req.params;
+
+            const { data: buyServiceData, error } = await supabase
+                .from('buy_service')
+                .select('service_id, cart_id')
+                .eq('service_id', id)
+                .eq('cart_id', cart_id);
+
+            if (error) {
+                console.error('Cannot retrieve the reservation');
+                return res.status(500).json({ hasReservation: false });
+            }
+
+            if (buyServiceData && buyServiceData.length > 0) {
+                return res.status(200).json({ hasReservation: true });
+            } else {
+                return res.status(200).json({ hasReservation: false });
+            }
+        } catch (error) {
+            console.error('Error server');
+            return res.status(500).json({ hasReservation: false });
+        }
+    }
+
     async getReservationByServiceIdAndUserId(req, res) {
         try {
             const {id, user_id} = req.params;
