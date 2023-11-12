@@ -181,6 +181,31 @@ class UserController {
         }
     }
 
+    async getUserPaidCarts(req, res) {
+        try {
+            const {id} = req.params;
+
+            const {data, error} = await supabase
+                .from('cart')
+                .select('*')
+                .eq('user_id', id)
+                .eq('state', 'PAID');
+
+            if (error) {
+                return res.status(500).json({error: 'Error: cannot retrieve the carts.'});
+            }
+
+            if (data.length === 0) {
+                return res.status(404).json({error: 'Carts not found.'});
+            }
+
+            res.json(data);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error server.'});
+        }
+    }
+
     async getUserCurrentCart(req, res) {
         try {
             const {id} = req.params;

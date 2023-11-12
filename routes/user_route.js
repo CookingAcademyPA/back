@@ -14,6 +14,7 @@ router.put('/:id', authMiddleware, userController.updateUserInfo);
 router.put('/:id/changePassword', authMiddleware, userController.updateUserPassword);
 router.get('/:id/cart', authMiddleware, userController.getUserCurrentCart);
 router.get('/:id/carts', authMiddleware, userController.getUserCarts);
+router.get('/:id/carts/paid', authMiddleware, userController.getUserPaidCarts);
 router.delete('/:id', authMiddleware, adminMiddleware, userController.deleteUser);
 
 module.exports = router;

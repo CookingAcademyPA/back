@@ -13,5 +13,6 @@ router.post('/', authMiddleware, adminMiddleware, serviceController.createServic
 router.put('/:id', authMiddleware, serviceController.updateService);
 router.delete('/:id', authMiddleware, adminMiddleware, serviceController.deleteService);
 router.get('/:id/reservations', authMiddleware, serviceController.getReservationsByServiceId);
+router.get('/:id/reservations/:user_id', authMiddleware, serviceController.getReservationByServiceIdAndUserId);
 
 module.exports = router;
